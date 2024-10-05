@@ -1,6 +1,6 @@
 
-/*<!-- /templates/index.html -->
-<!DOCTYPE html>
+<!-- /templates/index.html -->
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,8 @@
         <button type="submit">Submit</button>
     </form>
 </body>
-</html> -->*/
+</html>  -->
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +28,7 @@
 </head>
 <body>
     <h1>Upload an Image for Prediction</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
+    <form action="/predict" method="post" enctype="multipart/form-data">
         <label for="file">Choose an image:</label>
         <input type="file" id="file" name="file" accept="image/*" required>
         <br><br>
@@ -42,7 +43,7 @@
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
             const formData = new FormData(form);
-            const response = await fetch('/upload', {
+            const response = await fetch('/predict', {
                 method: 'POST',
                 body: formData
             });
