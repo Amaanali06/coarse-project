@@ -1,45 +1,121 @@
-
-<!-- /templates/index.html -->
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Upload</title>
-</head>
-<body>
-    <h1>Upload an Image</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <label for="file">Choose an image:</label>
-        <input type="file" id="file" name="file" accept="image/*" required>
-        <br><br>
-        <button type="submit">Submit</button>
-    </form>
-</body>
-</html>  -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .file-input {
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .file-input:hover {
+            background-color: #0056b3;
+        }
+        .file-input-wrapper input[type="file"] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        #preview {
+            margin-top: 20px;
+            max-width: 100%;
+            max-height: 300px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload an Image for Prediction</h1>
-    <form action="/predict" method="post" enctype="multipart/form-data">
-        <label for="file">Choose an image:</label>
-        <input type="file" id="file" name="file" accept="image/*" required>
-        <br><br>
-        <button type="submit">Submit</button>
-    </form>
-
-    <div id="result"></div>
+    <div class="container">
+        <h1>Upload an Image for Prediction</h1>
+        <form id="uploadForm" action="/predict" method="post" enctype="multipart/form-data">
+            <div class="file-input-wrapper">
+                <button class="file-input">Choose an image</button>
+                <input type="file" id="file" name="file" accept="image/*" required>
+            </div>
+            <br><br>
+            <button type="submit" id="submitBtn" disabled>Submit</button>
+        </form>
+        <img id="preview" src="#" alt="Image Preview">
+        <div id="result"></div>
+    </div>
 
     <script>
-        // Optional: Handle the response on the frontend
-        const form = document.querySelector('form');
+        const form = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('file');
+        const preview = document.getElementById('preview');
+        const resultDiv = document.getElementById('result');
+        const submitBtn = document.getElementById('submitBtn');
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+                submitBtn.disabled = false; // Enable the submit button
+            } else {
+                preview.style.display = 'none';
+                submitBtn.disabled = true; // Disable the submit button
+            }
+        });
+
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
             const formData = new FormData(form);
@@ -48,7 +124,7 @@
                 body: formData
             });
             const result = await response.json();
-            document.getElementById('result').innerHTML = `Predicted class: ${result.predicted_class}`;
+            resultDiv.innerHTML = `Predicted class: ${result.predicted_class}`;
         });
     </script>
 </body>
